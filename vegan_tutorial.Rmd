@@ -14,11 +14,16 @@ First, I will load the necessary packages and data:
 ```{r setup}
 
 # Load libraries.
-devtools::install_github("gavinsimpson/ggvegan")
-library(tidyverse) # Loads the tidyverse, including ggplot2.
-library(forcats) # Loading these until I can get the tidyverse working...
-library(vegan) # Loads the vegan package, which we will be exploring.
-library(ggvegan) # Loads package to facilitate plotting from vegan in ggplot2.
+# Install and load required packages
+if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")
+if (!requireNamespace("tidyverse", quietly = TRUE)) install.packages("tidyverse")
+if (!requireNamespace("vegan", quietly = TRUE)) install.packages("vegan")
+if (!requireNamespace("ggvegan", quietly = TRUE)) devtools::install_github("gavinsimpson/ggvegan")
+
+library(tidyverse)
+library(forcats)
+library(vegan)
+library(ggvegan)
 
 # Load data.
 
