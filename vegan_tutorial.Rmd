@@ -14,6 +14,7 @@ First, I will load the necessary packages and data:
 ```{r setup}
 
 # Load libraries.
+devtools::install_github("gavinsimpson/ggvegan")
 library(tidyverse) # Loads the tidyverse, including ggplot2.
 library(forcats) # Loading these until I can get the tidyverse working...
 library(vegan) # Loads the vegan package, which we will be exploring.
@@ -236,15 +237,19 @@ And we can use the fortify() function to better customize and replicate Figure 3
 
 PCA_fortify <- fortify(birdPCA) # This provides results in a dataframe.
 
+# Extract the results for the PCA only for the sampling sites
 PCA_fort_sites <- PCA_fortify %>% 
-  filter(Score == "sites") %>% 
-  full_join(., site_type, by = c("Label" = "sitec")) # This extracts the results of the PCA only for the sampling sites and joins it with the dataframe containing landtypes.
+  filter(score == "sites") %>% 
+  full_join(., site_type, by = c("label" = "sitec"))
 
+# Extract the results for the PCA only for the species (so the vectors)
 PCA_fort_species <- PCA_fortify %>% 
-  filter(Score == "species") # This extracts the results for the PCA only for the species (so the vectors).
+  filter(score == "species")
 
-PCA_fort_sites$landtypef <- factor(PCA_fort_sites$landtype, levels = c( "do", "dm", "wm")) # Adds in new column for landtype as a leveled factor.
+# Add a new column for landtype as a leveled factor
+PCA_fort_sites$landtypef <- factor(PCA_fort_sites$landtype, levels = c("do", "dm", "wm"))
 
+# Create the plot
 PCA_fortify_plot <- ggplot() +
   geom_point(data = PCA_fort_sites, aes(x = PC1, y = PC2, col = landtypef)) +
   geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
@@ -252,15 +257,21 @@ PCA_fortify_plot <- ggplot() +
   scale_color_manual(values = c("lightsalmon1", "tan4", "springgreen3")) +
   geom_segment(data = PCA_fort_species, aes(x = 0, xend = PC1, y = 0, yend = PC2), 
                arrow = arrow(length = unit(0.2, "cm"))) +
-  geom_text(data = PCA_fort_species, aes(x = PC1, y = PC2, label = Label)) +
+  geom_text(data = PCA_fort_species, aes(x = PC1, y = PC2, label = label)) +
   clean_background +
   labs(x = "PC1 (23.57%)",
        y = "PC2 (12.23%)",
-       title = "Principal Components Analysis - using fortify()") # This creates the plot.
+       title = "Principal Components Analysis - using fortify()")
 
-PCA_fortify_plot # And this prints the plot to mimic figure 3.
+# Print the plot
+PCA_fortify_plot
+
 
 ```
+
+
+
+
 
 *Figure 5. Community Composition by Ecological Landtype Using ggvegan.*
 
